@@ -1,2 +1,2 @@
 # Proyecto-LEDs
-Proyecto con la funcionalidad que permite que mediante las pulsaciones cambie el ritmo de encendido/apagado de los LEDs del microcontrolador
+Proyecto con la funcionalidad que permite mediante las pulsaciones cambiar el ritmo de encendido/apagado de los LEDs del microcontrolador

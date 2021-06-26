@@ -1,112 +1,91 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
+  * @file    Templates/Src/main.c 
+  * @author  MCD Application Team
+  * @brief   Las pulsaciones permiten cambiar el ritmo de encendido apagado de 
+	*					 los LEDs de la tarjeta
+  *
+  * @note    modified by ARM
+  *          The modifications allow to use this file as User Code Template
+  *          within the Device Family Pack.
   ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
-  *
+  * 
   ******************************************************************************
   */
-/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim3;
-
-/* USER CODE BEGIN PV */
 int pulsacion = 0;
 int mode = 0;
-
-/* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM3_Init(void);
-/* USER CODE BEGIN PFP */
 
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
+/* Private functions ---------------------------------------------------------*/
 /**
-  * @brief  The application entry point.
-  * @retval int
+  * @brief  Main program
+  * @param  None
+  * @retval None
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+  /* STM32F4xx HAL library initialization:
+       - Configure the Flash prefetch, Flash preread and Buffer caches
+       - Systick timer is configured by default as source of time base, but user 
+             can eventually implement his proper time base source (a general purpose 
+             timer for example or other time source), keeping in mind that Time base 
+             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
+             handled in milliseconds basis.
+       - Low Level Initialization
+     */ 
+	HAL_Init();
 
-  /* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
+	SystemCoreClockUpdate();
+	
+ 
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM3_Init();
-  /* USER CODE BEGIN 2 */
 	HAL_TIM_Base_Start_IT(&htim3);
-  /* USER CODE END 2 */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+ 
   while (1)
   {
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
+  * @brief  System Clock Configuration
+  *         The system Clock is configured as follow : 
+  *            System Clock source            = PLL (HSE)
+  *            SYSCLK(Hz)                     = 168000000
+  *            HCLK(Hz)                       = 168000000
+  *            AHB Prescaler                  = 1
+  *            APB1 Prescaler                 = 4
+  *            APB2 Prescaler                 = 2
+  *            HSE Frequency(Hz)              = 8000000
+  *            PLL_M                          = 25
+  *            PLL_N                          = 336
+  *            PLL_P                          = 2
+  *            PLL_Q                          = 7
+  *            VDD(V)                         = 3.3
+  *            Main regulator output voltage  = Scale1 mode
+  *            Flash Latency(WS)              = 5
+  * @param  None
   * @retval None
   */
 void SystemClock_Config(void)
@@ -156,16 +135,11 @@ void SystemClock_Config(void)
 static void MX_TIM3_Init(void)
 {
 
-  /* USER CODE BEGIN TIM3_Init 0 */
-
-  /* USER CODE END TIM3_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM3_Init 1 */
 
-  /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
   htim3.Init.Prescaler = 4799;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
@@ -187,9 +161,7 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM3_Init 2 */
 
-  /* USER CODE END TIM3_Init 2 */
 
 }
 
@@ -229,7 +201,11 @@ static void MX_GPIO_Init(void)
 
 }
 
-/* USER CODE BEGIN 4 */
+/**
+  * @brief Función de callback del Timer para realizar el encendido de los LEDs
+	* @param htim: Timer que ha realizado la cuenta e invoca a la función de callback  
+  * @retval None
+  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	
@@ -254,7 +230,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		
 	}
 }
-
+/**
+  * @brief Función de callback de las lineas de interrupción. En este caso la pulsación del botón.
+	* 			 Al realizar la pulsacion se varia la frecuencia del Timer.
+	* @param htim: Timer que ha realizado la cuenta e invoca a la función de callback  
+  * @retval None
+  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {	
 	
@@ -285,7 +266,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	pulsacion = 0;
 	}
 }
-/* USER CODE END 4 */
+
 
 /**
   * @brief  This function is executed in case of error occurrence.

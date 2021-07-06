@@ -20,7 +20,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim3;
-int pulsacion = 0;
+int pulsacion = 1;
 int mode = 0;
 
 /* Private function prototypes -----------------------------------------------*/

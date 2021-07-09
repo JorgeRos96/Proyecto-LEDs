@@ -2,8 +2,9 @@
   ******************************************************************************
   * @file    Templates/Src/main.c 
   * @author  MCD Application Team
-  * @brief   Las pulsaciones permiten cambiar el ritmo de encendido apagado de 
-	*					 los LEDs de la tarjeta
+  * @brief   Proyecto en el que las pulsaciones del boton de la tarjeta del 
+	*					 microcontrolador  permiten cambiar el ritmo de encendido/apagado
+	* 				 de los tres LEDs de la tarjeta.
   *
   * @note    modified by ARM
   *          The modifications allow to use this file as User Code Template
@@ -15,7 +16,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "LED.h"
+#include "Boton.h"
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -25,7 +27,7 @@ int mode = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
+
 static void MX_TIM3_Init(void);
 
 /* Private functions ---------------------------------------------------------*/
@@ -56,8 +58,9 @@ int main(void)
  
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
+  GPIO_Init();
   MX_TIM3_Init();
+	LED_Init();
 	HAL_TIM_Base_Start_IT(&htim3);
 
   /* Infinite loop */
@@ -83,7 +86,7 @@ int main(void)
   *            PLL_P                          = 2
   *            PLL_Q                          = 7
   *            VDD(V)                         = 3.3
-  *            Main regulator output voltage  = Scale1 mode
+  *            Main regulator output voltage  = Scale1 moderasputinnn69	
   *            Flash Latency(WS)              = 5
   * @param  None
   * @retval None
@@ -165,41 +168,7 @@ static void MX_TIM3_Init(void)
 
 }
 
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14|GPIO_PIN_7, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PC13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PB0 PB14 PB7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_14|GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-
-}
 
 /**
   * @brief Función de callback del Timer para realizar el encendido de los LEDs

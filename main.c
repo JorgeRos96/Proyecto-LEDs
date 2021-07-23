@@ -76,7 +76,7 @@ int main(void)
 		Error_Handler(0);
 
 
-  /* Inicialización y configuración del reloj a 168 MHz */
+  /* Inicialización y configuración del reloj a 180 MHz */
   SystemClock_Config();
 	SystemCoreClockUpdate();
 
@@ -143,17 +143,17 @@ int main(void)
 /**
   * @brief  System Clock Configuration
   *         The system Clock is configured as follow : 
-  *            System Clock source            = PLL (HSE)
-  *            SYSCLK(Hz)                     = 168000000
-  *            HCLK(Hz)                       = 168000000
+  *            System Clock source            = PLL (HSI)
+  *            SYSCLK(Hz)                     = 180000000
+  *            HCLK(Hz)                       = 180000000
   *            AHB Prescaler                  = 1
   *            APB1 Prescaler                 = 4
   *            APB2 Prescaler                 = 2
-  *            HSE Frequency(Hz)              = 8000000
-  *            PLL_M                          = 25
-  *            PLL_N                          = 336
+  *            HSE Frequency(Hz)              = 16000000
+  *            PLL_M                          = 8
+  *            PLL_N                          = 180
   *            PLL_P                          = 2
-  *            PLL_Q                          = 7
+  *            PLL_Q                          = 4
   *            VDD(V)                         = 3.3
   *            Main regulator output voltage  = Scale1 moderasputinnn69	
   *            Flash Latency(WS)              = 5
@@ -217,11 +217,11 @@ void SystemClock_Config(void)
 /**
   * @brief Inicialización y configuración del Timer 3 con una frecuencia de 1 Hz
 	*				 y con cuenta ascendente. 
-	* 			 Como la frecuencia del sistema es de 168 MHz y el Timer 3 tiene como
-	*				 fuente de reloj el APB1 de 84MHz, se establece un counter de 65536 y 
-	*				 un prescaler de 1282 para tener la frecuencia de 1 HZ.
+	* 			 Como la frecuencia del sistema es de 180 MHz y el Timer 3 tiene como
+	*				 fuente de reloj el APB1 de 90 MHz, se establece un counter de 65536 y 
+	*				 un prescaler de 1372 para tener la frecuencia de 1 HZ.
 	*				
-	*					f = 84*10^6/(65536*1282) = 1 Hz aproximadamente
+	*					f = 90*10^6/(65536*1372) = 1 Hz aproximadamente
 	*
   * @param None
   * @retval None
@@ -365,7 +365,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 /**
   * @brief  This function is executed in case of error occurrence.
-  * @param  None
+	* @param  fallo: variable que indica donde se ha producido el error
   * @retval None
   */
 static void Error_Handler(int fallo)

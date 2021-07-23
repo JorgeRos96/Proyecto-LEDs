@@ -44,8 +44,7 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-  void Error_Handler(void);
-	/* Exported thread functions,  
+  /* Exported thread functions,  
   Example: extern void app_main (void *arg); */
 
 #endif /* __MAIN_H */

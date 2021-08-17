@@ -34,6 +34,7 @@
 #include "USART.h"
 #include "LED.h"
 #include "Boton.h"
+#include "Watchdog.h"
 
 
 #ifdef _RTE_
@@ -62,7 +63,10 @@ static void MX_TIM3_Init(void);
   */
 int main(void)
 {
-
+	/*Inicialización del IWDG*/
+		if (init_Watchdog() != 0)
+			Error_Handler(5);
+		
   /* STM32F4xx HAL library initialization:
        - Configure the Flash prefetch, Flash preread and Buffer caches
        - Systick timer is configured by default as source of time base, but user 
@@ -88,6 +92,7 @@ int main(void)
 	LED_Init();
 	/* Habilitación del Timer 3 con generación de interrupción*/
 	HAL_TIM_Base_Start_IT(&htim3);
+	
 
 	/* Inicialización de la USART a traves de la función init_USART de la libreria USART
 	*	 y habilitación de la transmisión
@@ -137,6 +142,7 @@ int main(void)
 			}
 		LED = 0;
 		}
+		reset_Watchdog ();
   }
 }
 
@@ -299,9 +305,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_SET);
 		mode = 0;
 		
-	}
-		
-		
+		}	
 	}
 }
 
@@ -315,53 +319,54 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {	
 
 	boton = 1;
-	
-	if(pulsacion == 0){
+	if (GPIO_Pin == GPIO_PIN_13){
 		
-	/*Se para el Timer3*/
-	HAL_TIM_Base_Stop_IT(&htim3);
-	/* Se establece el nuevo prescaler con la frecuencia de 1 Hz*/
-	htim3.Instance->PSC = 1372;
-	/*Se arranca de nuevo el Timer3*/
-	HAL_TIM_Base_Start_IT(&htim3);
-	pulsacion = 1;
+		if(pulsacion == 0){
+			
+			/*Se para el Timer3*/
+			HAL_TIM_Base_Stop_IT(&htim3);
+			/* Se establece el nuevo prescaler con la frecuencia de 1 Hz*/
+			htim3.Instance->PSC = 1372;
+			/*Se arranca de nuevo el Timer3*/
+			HAL_TIM_Base_Start_IT(&htim3);
+			pulsacion = 1;
+			
+		}
+		else if(pulsacion == 1){
 		
-	}
-	else if(pulsacion == 1){
-	
-	/*Se para el Timer3*/
-	HAL_TIM_Base_Stop_IT(&htim3);
-	/* Se establece el nuevo prescaler con la frecuencia de 2 Hz*/
-	htim3.Instance->PSC = 685;
-	/*Se arranca de nuevo el Timer3*/
-	HAL_TIM_Base_Start_IT(&htim3);
-	pulsacion = 2;
-		
-	}
+			/*Se para el Timer3*/
+			HAL_TIM_Base_Stop_IT(&htim3);
+			/* Se establece el nuevo prescaler con la frecuencia de 2 Hz*/
+			htim3.Instance->PSC = 685;
+			/*Se arranca de nuevo el Timer3*/
+			HAL_TIM_Base_Start_IT(&htim3);
+			pulsacion = 2;
+			
+		}
 
-	else if(pulsacion == 2){
-	
-	/*Se para el Timer3*/
-	HAL_TIM_Base_Stop_IT(&htim3);
-	/* Se establece el nuevo prescaler con la frecuencia de 4 Hz*/
-	htim3.Instance->PSC = 342;
-	/*Se arranca de nuevo el Timer3*/
-	HAL_TIM_Base_Start_IT(&htim3);
-	pulsacion = 3;
+		else if(pulsacion == 2){
 		
-	}
-	else {
+			/*Se para el Timer3*/
+			HAL_TIM_Base_Stop_IT(&htim3);
+			/* Se establece el nuevo prescaler con la frecuencia de 4 Hz*/
+			htim3.Instance->PSC = 342;
+			/*Se arranca de nuevo el Timer3*/
+			HAL_TIM_Base_Start_IT(&htim3);
+			pulsacion = 3;
+			
+		}
+		else {
+			
+			/*Se para el Timer3*/
+			HAL_TIM_Base_Stop_IT(&htim3);
+			/* Se establece el nuevo prescaler con la frecuencia de 8 Hz*/
+			htim3.Instance->PSC = 171;
+			/*Se arranca de nuevo el Timer3*/
+			HAL_TIM_Base_Start_IT(&htim3);
+			pulsacion = 0;
 		
-	/*Se para el Timer3*/
-	HAL_TIM_Base_Stop_IT(&htim3);
-	/* Se establece el nuevo prescaler con la frecuencia de 8 Hz*/
-	htim3.Instance->PSC = 171;
-	/*Se arranca de nuevo el Timer3*/
-	HAL_TIM_Base_Start_IT(&htim3);
-	pulsacion = 0;
-	
-	}
-	
+		}
+}
 }
 /**
   * @brief  This function is executed in case of error occurrence.
@@ -385,6 +390,9 @@ static void Error_Handler(int fallo)
 	else if (fallo == 4)
 		/* Mensaje si se ha producido un error en la inicialización del Timer 3*/
 		printf(buf,"\r Se ha producido un error al inicializar el Timer 3\n");
+	else if (fallo == 5)
+		/* Mensaje si se ha producido un error en la inicialización del Watchdog*/
+		printf(buf,"\r Se ha producido un error al inicializar el Watchdog\n");
 
   while(1)
   {
